@@ -9,7 +9,7 @@
   "dependencies": {
     "react": "16.6.3",
     "react-native": "0.58.1",
-    "react-native-audio-recorder": "git+https://github.com/crowdbotics-users/audvice-native-audio-recorder.git#android",
+    "react-native-audio-recorder": "git+https://github.com/crowdbotics-users/audvice-native-audio-recorder.git",
     "react-native-permissions": "^1.1.1"
   },
   "devDependencies": {

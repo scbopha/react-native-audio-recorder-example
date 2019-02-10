@@ -4,23 +4,17 @@
  *
  * @format
  * @flow
- * @lint-ignore-every XPLATJSCOPYRIGHT1
  */
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
-
 import Permissions from 'react-native-permissions'
 
 import AudioRecorder from 'react-native-audio-recorder'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const audioFile = Platform.OS === 'android' ? '/sdcard/Android/media/com.google.android.talk/Ringtones/hangouts_incoming_call.ogg' : '1.mp3'
 
+type Props = {};
 export default class App extends Component<Props> {
 
   constructor(props) {
@@ -40,13 +34,13 @@ export default class App extends Component<Props> {
     if (Platform.OS === 'android') {
       Permissions.checkMultiple(['microphone', 'storage'])
       .then(response => {        
-        var permissionArray = []
         if (response.microphone !== 'authorized') {
           Permissions.request('microphone')
           .then(response => {
             if (response.storage !== 'authorized') {
               Permissions.request('storage')
-              .then(response => {                
+              .then(response => {
+                
               })
             }else{              
             }
@@ -57,6 +51,38 @@ export default class App extends Component<Props> {
             .then(response => {
             })
           }else{            
+            this.setState({
+              hasPermissions: true
+            })
+          }       
+        }       
+      })
+    } else {
+      Permissions.checkMultiple(['microphone', 'mediaLibrary'])
+      .then(response => {  
+        
+        console.warn(response)      
+        if (response.microphone !== 'authorized') {
+          Permissions.request('microphone')
+          .then(response => {
+            if (response.mediaLibrary !== 'authorized') {
+              Permissions.request('mediaLibrary')
+              .then(response => {
+              })
+            }else{              
+            }
+          })
+        } else {   
+          if (response.mediaLibrary !== 'authorized') {
+            Permissions.request('mediaLibrary')
+            .then(response => {
+              if (response == 'authorized') {
+                this.setState({
+                  hasPermissions: true
+                })
+              }
+            })
+          }else{
             this.setState({
               hasPermissions: true
             })
@@ -112,7 +138,7 @@ export default class App extends Component<Props> {
       return
     }
 
-    this.audioRecoder.initialize('/sdcard/Android/media/com.google.android.talk/Ringtones/hangouts_incoming_call.ogg', 2000)
+    this.audioRecoder.initialize(audioFile, 2000)
     this.setState({
       initialized: true
     })
@@ -130,7 +156,7 @@ export default class App extends Component<Props> {
       return
     }
 
-    this.audioRecoder.renderByFile('/sdcard/Android/media/com.google.android.talk/Ringtones/hangouts_incoming_call.ogg')
+    this.audioRecoder.renderByFile(audioFile)
     .then(res => {
       this.setState({
         result: res,
@@ -172,7 +198,7 @@ export default class App extends Component<Props> {
       )
       return
     }
-    this.audioRecoder.cut('/sdcard/Android/media/com.google.android.talk/Ringtones/hangouts_incoming_call.ogg', 500, 2000)
+    this.audioRecoder.cut(audioFile, 500, 2000)
     .then(res => {
       this.setState({
         result: `${res.filepath} : ${res.duration} ms`,
@@ -195,7 +221,7 @@ export default class App extends Component<Props> {
           timeTextColor={'white'}
           timeTextSize={12}
           onScroll={true}
-          pixelsPerSecond={200}
+          pixelsPerSecond={50}
           ref={ref => this.audioRecoder = ref}
         />
         <View style={styles.buttonContainer}>
