@@ -12,7 +12,7 @@ import Permissions from 'react-native-permissions'
 
 import AudioRecorder from 'react-native-audio-recorder'
 
-const audioFile = Platform.OS === 'android' ? '/sdcard/Android/media/com.google.android.talk/Ringtones/hangouts_incoming_call.ogg' : '1.mp3'
+var audioFile = Platform.OS === 'android' ? '/sdcard/Android/media/com.google.android.talk/Ringtones/hangouts_incoming_call.ogg' : '1.mp3'
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -110,6 +110,7 @@ export default class App extends Component<Props> {
         this.setState({
           result: `${res.filepath} : ${res.duration} ms`
         })
+        audioFile = res.filepath        
       })
       .catch((err) => {
         this.setState({
@@ -137,7 +138,6 @@ export default class App extends Component<Props> {
       )
       return
     }
-
     this.audioRecoder.initialize(audioFile, 2000)
     this.setState({
       initialized: true
@@ -155,7 +155,6 @@ export default class App extends Component<Props> {
       )
       return
     }
-
     this.audioRecoder.renderByFile(audioFile)
     .then(res => {
       this.setState({
@@ -221,7 +220,7 @@ export default class App extends Component<Props> {
           timeTextColor={'white'}
           timeTextSize={12}
           onScroll={true}
-          pixelsPerSecond={50}
+          pixelsPerSecond={100}
           ref={ref => this.audioRecoder = ref}
         />
         <View style={styles.buttonContainer}>
