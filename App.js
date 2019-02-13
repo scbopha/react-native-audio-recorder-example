@@ -98,6 +98,36 @@ export default class App extends Component<Props> {
       return
     }
     this.audioRecoder.play()
+    .then(res => {
+      this.setState({
+        result: res,
+        initialized: true
+      })
+    })
+    .catch((err) => {
+      this.setState({
+        result: `error: ${err}`
+      })
+    })
+  }
+
+  onPressPause() {
+    if (!this.state.initialized) {
+      console.warn('Please call init method.')
+      return
+    }
+    this.audioRecoder.pause()
+    .then(res => {
+      this.setState({
+        result: res,
+        initialized: true
+      })
+    })
+    .catch((err) => {
+      this.setState({
+        result: `error: ${err}`
+      })
+    })
   }
 
   onPressStop() {
@@ -110,7 +140,7 @@ export default class App extends Component<Props> {
         this.setState({
           result: `${res.filepath} : ${res.duration} ms`
         })
-        audioFile = res.filepath        
+        audioFile = res.filepath
       })
       .catch((err) => {
         this.setState({
@@ -125,6 +155,17 @@ export default class App extends Component<Props> {
       return
     }
     this.audioRecoder.startRecording()
+    .then(res => {
+      this.setState({
+        result: res,
+        initialized: true
+      })
+    })
+    .catch((err) => {
+      this.setState({
+        result: `error: ${err}`
+      })
+    })
   }
 
   onPressinitWithFile() {
@@ -139,8 +180,16 @@ export default class App extends Component<Props> {
       return
     }
     this.audioRecoder.initialize(audioFile, 2000)
-    this.setState({
-      initialized: true
+    .then(res => {
+      this.setState({
+        result: res,
+        initialized: true
+      })
+    })
+    .catch((err) => {
+      this.setState({
+        result: `error: ${err}`
+      })
     })
   }
 
@@ -155,6 +204,7 @@ export default class App extends Component<Props> {
       )
       return
     }
+
     this.audioRecoder.renderByFile(audioFile)
     .then(res => {
       this.setState({
@@ -181,8 +231,16 @@ export default class App extends Component<Props> {
       return
     }
     this.audioRecoder.initialize('', -1)
-    this.setState({
-      initialized: true
+    .then(res => {
+      this.setState({
+        result: res,
+        initialized: true
+      })
+    })
+    .catch((err) => {
+      this.setState({
+        result: `error: ${err}`
+      })
     })
   }
 
@@ -220,8 +278,9 @@ export default class App extends Component<Props> {
           timeTextColor={'white'}
           timeTextSize={12}
           onScroll={true}
-          pixelsPerSecond={100}
+          pixelsPerSecond={50}
           ref={ref => this.audioRecoder = ref}
+          onPlayFinished={() => console.warn('play finished')}
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={this.onPressInit.bind(this)}>
@@ -239,13 +298,16 @@ export default class App extends Component<Props> {
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={this.onPressStart.bind(this)}>
-            <Text style={{color: 'white'}}>start/pause</Text>
+            <Text style={{color: 'white'}}>Record</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={this.onPressStop.bind(this)}>
-            <Text style={{color: 'white'}}>stop</Text>
+            <Text style={{color: 'white'}}>Stop Record</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={this.onPressPlay.bind(this)}>
             <Text style={{color: 'white'}}>play</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={this.onPressPause.bind(this)}>
+            <Text style={{color: 'white'}}>pause</Text>
           </TouchableOpacity>
         </View>
         <Text>{this.state.result}</Text>
