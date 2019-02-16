@@ -119,7 +119,7 @@ export default class App extends Component<Props> {
     this.audioRecoder.pause()
     .then(res => {
       this.setState({
-        result: res,
+        result: `${res.position} ms`,
         initialized: true
       })
     })
@@ -277,6 +277,7 @@ export default class App extends Component<Props> {
           plotLineColor={'yellow'}
           timeTextColor={'white'}
           timeTextSize={12}
+          onScrolled={(value) => console.warn(`onScrolled: ${value} ms`)}
           onScroll={true}
           pixelsPerSecond={50}
           ref={ref => this.audioRecoder = ref}
